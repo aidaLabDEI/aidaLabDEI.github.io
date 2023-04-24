@@ -4,7 +4,7 @@ pkgs.mkShell {
     name="AIDA website";
     buildInputs = [
         pkgs.just
-        pkgs.nu
+        pkgs.nushell
     ];
     shellHook = ''
         echo "Initialized development environment.."
