@@ -1,0 +1,101 @@
+[
+  {
+    "authors": [
+      "Leonardo Pellegrina",
+      "Fabio Vandin"
+    ],
+    "key": "PellegrinaV2022",
+    "title": "Discovering significant evolutionary trajectories in cancer phylogenies",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/36124798/",
+    "venue": "Bioinformatics",
+    "year": "2022"
+  },
+  {
+    "authors": [
+      "Davide Buffelli",
+      "Pietro Li\u00f3",
+      "Fabio Vandin"
+    ],
+    "key": "BuffelliLV2022",
+    "title": "SizeShiftReg: a Regularization Method for Improving Size-Generalization in Graph Neural Networks",
+    "url": "https://papers.nips.cc/paper_files/paper/2022/hash/ceeb3fa5be458f08fbb12a5bb783aac8-Abstract-Conference.html",
+    "venue": "NeurIPS",
+    "year": "2022"
+  },
+  {
+    "authors": [
+      "A. Guiotto",
+      "G. Bortolami",
+      "A. Ciniglio",
+      "F. Spolaor",
+      "G. Guarneri",
+      "A. Avogaro",
+      "F. Cibin",
+      "F. Silvestri",
+      "Z. Sawacha."
+    ],
+    "key": "GuiottoEtAl2022",
+    "title": "Machine learning approach to diabetic foot risk classification with biomechanics data",
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S0966636222005537",
+    "venue": "Gait & Posture",
+    "year": "2022"
+  },
+  {
+    "authors": [
+      "Diego Santoro",
+      "Leonardo Pellegrina",
+      "Fabio Vandin"
+    ],
+    "key": "SantoroPV2021",
+    "title": "SPRISS: Approximating Frequent k-mers by Sampling Reads, and Applications",
+    "url": "https://arxiv.org/abs/2101.07117",
+    "venue": "RECOMB",
+    "year": "2021"
+  },
+  {
+    "authors": [
+      "Davide Buffelli",
+      "Fabio Vandin"
+    ],
+    "key": "BuffelliV21",
+    "title": "Attention-Based Deep Learning Framework for Human Activity Recognition With User Adaptation",
+    "url": "https://ieeexplore.ieee.org/document/9382331",
+    "venue": "IEEE Sensors",
+    "year": "2021"
+  },
+  {
+    "authors": [
+      "Yoo-Ah Kim",
+      "D. Wojtowicz",
+      "R. Sarto Basso",
+      "I. Sason",
+      "W. Robinson",
+      "D. S. Hochbaum",
+      "M. Leiserson",
+      "R. Sharan",
+      "F. Vandin",
+      "T. Przytycka."
+    ],
+    "key": "KimetAl2020",
+    "title": "Network-based approaches elucidate differences within APOBEC and clock-like signatures in breast cancer",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/32471470/",
+    "venue": "Genome Medicine",
+    "year": "2020"
+  },
+  {
+    "authors": [
+      "Yoo-Ah Kim",
+      "R. Sarto Basso",
+      "D. Wojtowicz",
+      "A. S. Liu",
+      "D. S. Hochbaum",
+      "F. Vandin",
+      "T. Przytycka"
+    ],
+    "key": "KimetAl2020",
+    "title": "Identifying Drug Sensitivity Subnetworks with NETPHIX",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/33089107/",
+    "venue": "iScience",
+    "year": "2020"
+  }
+]
