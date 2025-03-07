@@ -13,7 +13,8 @@ authors = [
     { 'author': 'Ilie_Sarpe', 'from_year': '2020', 'to_year': '3000' },
     { 'author': 'Dario_Simionato', 'from_year': '2020', 'to_year': '3000' },
     { 'author': 'Andrea_Tonon', 'from_year': '2020', 'to_year': '2022' },
-    { 'author': 'Fabrizio_Boninsegna', 'from_year': '2023', 'to_year': '2026' }
+    { 'author': 'Fabrizio_Boninsegna', 'from_year': '2023', 'to_year': '2026' },
+    { 'author': 'Cristian_Boldrin', 'from_year': '2023', 'to_year': '2027' }
 ]
 
 exclude_venues = [
