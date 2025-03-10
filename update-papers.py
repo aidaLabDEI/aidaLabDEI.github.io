@@ -72,7 +72,7 @@ def format_year(pubs, year):
 def format_all(pubs):
     formatted = [
         format_year(pubs, str(year))
-        for year in reversed(range(2020, 2025))
+        for year in reversed(range(2020, 2026))
     ]
     return "\n".join(formatted)
 

@@ -1,5 +1,17 @@
 [
-  {
+{
+      "authors": [
+        "Margherita Cavattoni",
+        "Matteo Comin",
+        "Francesco Silvestri"
+      ],
+      "key": "CavattoniCS24",
+      "title": "Covid-19 Pandemic’s Enduring Impact on Urban Mobility: The Case of Free-Floating Bike Sharing in Padova, Italy",
+      "url": "https://journals.sagepub.com/doi/10.1177/03611981231223977",
+      "venue": "Transportation Research Record",
+      "year": "2024"
+    },
+{
     "authors": [
       "Leonardo Pellegrina",
       "Fabio Vandin"
