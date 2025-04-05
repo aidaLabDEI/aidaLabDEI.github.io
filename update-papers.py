@@ -22,6 +22,7 @@ exclude_venues = [
 ]
 
 def get_author(author, from_year, to_year):
+    print(f"Updating {author}")
     url = f'https://dblp.org/search/publ/api?q=author:{author}:&format=json'
     url = f'https://dblp.uni-trier.de/search/publ/api?q=author:{author}:&format=json'
     req = urllib.request.urlopen(url)
