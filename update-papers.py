@@ -1,10 +1,8 @@
-import urllib.request
 import json
-import os
-import time
+import re
+import subprocess
 
-HEADERS = {'User-Agent': 'update-papers/1.0 (matteo.ceccarello@unipd.it)'}
-REQUEST_DELAY = 2  # seconds between dblp requests
+SPARQL_ENDPOINT = 'https://sparql.dblp.org/sparql'
 
 authors = [
     { 'author': 'Andrea_Pietracaprina', 'from_year': '2020', 'to_year': '3000' },
@@ -25,45 +23,78 @@ exclude_venues = [
     'CoRR'
 ]
 
-def get_author(author, from_year, to_year):
-    print(f"Updating {author}")
-    url = f'https://dblp.org/search/publ/api?q=author:{author}:&format=json'
-    # url = f'https://dblp.uni-trier.de/search/publ/api?q=author:{author}:&format=json'
-    req = urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS))
-    content_type = req.headers.get('Content-Type', '')
-    body = req.read()
-    if 'json' not in content_type:
-        raise RuntimeError(
-            f"dblp returned {content_type!r} instead of JSON for {author} "
-            f"(bot challenge or rate limit?): {body[:100]!r}"
+def sparql(query):
+    # Use curl rather than urllib: dblp serves a bot challenge page to
+    # urllib-like clients, but not to curl.
+    out = subprocess.run(
+        ['curl', '-sS', '--fail', '-G', SPARQL_ENDPOINT,
+         '-H', 'Accept: application/sparql-results+json',
+         '--data-urlencode', f'query={query}'],
+        check=True, capture_output=True
+    ).stdout
+    try:
+        dat = json.loads(out)
+    except json.JSONDecodeError:
+        raise RuntimeError(f"dblp SPARQL returned non-JSON output: {out[:100]!r}")
+    return [
+        {var: b['value'] for var, b in row.items()}
+        for row in dat['results']['bindings']
+    ]
+
+
+def get_papers():
+    # Every publication (co-)created by one of the authors in their year range,
+    # one row per author signature so that we can rebuild the author list.
+    values = "\n".join(
+        f'("{a["author"].replace("_", " ")}" "{a["from_year"]}" "{a["to_year"]}")'
+        for a in authors
+    )
+    query = f"""
+PREFIX dblp: <https://dblp.org/rdf/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?pub ?title ?year ?venue ?url ?ord ?name WHERE {{
+  {{
+    SELECT DISTINCT ?pub WHERE {{
+      VALUES (?label ?from ?to) {{ {values} }}
+      ?person rdfs:label ?label .
+      ?pub dblp:createdBy ?person ;
+           dblp:yearOfPublication ?y .
+      FILTER(STR(?y) >= ?from && STR(?y) <= ?to)
+    }}
+  }}
+  ?pub dblp:title ?title ;
+       dblp:yearOfPublication ?year ;
+       dblp:hasSignature ?sig .
+  ?sig a dblp:AuthorSignature ;
+       dblp:signatureOrdinal ?ord ;
+       dblp:signatureDblpName ?name .
+  OPTIONAL {{ ?pub dblp:publishedIn ?venue }}
+  OPTIONAL {{ ?pub dblp:primaryDocumentPage ?url }}
+}}
+"""
+    papers = dict()
+    for row in sparql(query):
+        key = row['pub'].removeprefix('https://dblp.org/rec/')
+        pap = papers.setdefault(key, {
+            "names": dict(),
+            "url": row.get('url', row['pub']),
+            "title": row['title'],
+            "venue": row.get('venue', ''),
+            "year": row['year'],
+            "key": key
+        })
+        pap["names"][int(row['ord'])] = row['name']
+
+    result = []
+    for pap in papers.values():
+        names = pap.pop("names")
+        # drop dblp homonym disambiguation suffixes, e.g. "Francesco Silvestri 0001"
+        pap["authors"] = ", ".join(
+            re.sub(r' \d{4}$', '', names[i]) for i in sorted(names)
         )
-    dat = json.loads(body)
-    time.sleep(REQUEST_DELAY)
-    hits = dat['result']['hits']['hit']
-    papers = []
-    for pap in hits:
-        pap = pap['info']
-        if from_year <= pap["year"] <= to_year:
-            authors = pap['authors']['author']
-            if isinstance(authors, list):
-                authors = ", ".join([
-                    a['text']
-                    for a in pap['authors']['author']
-                ])
-            else:
-                authors = authors['text']
-            authors = authors.replace("0001", "")
-            entry = {
-                "authors": authors,
-                "url": pap['ee'],
-                "title": pap['title'],
-                "venue": pap['venue'],
-                "year": pap['year'],
-                "key": pap["key"]
-            }
-            if entry['venue'] not in exclude_venues:
-                papers.append(entry)
-    return papers
+        if pap['venue'] not in exclude_venues:
+            result.append(pap)
+    return result
 
 
 def format_year(pubs, year):
@@ -108,10 +139,10 @@ def get_all():
         else:
             print("ERROR: paper", p['key'],
                   "present more than one time in manual publications")
-    for author in authors:
-        for p in get_author(**author):
-            if p['key'] not in papers:
-                papers[p['key']] = p
+    print("Querying dblp")
+    for p in get_papers():
+        if p['key'] not in papers:
+            papers[p['key']] = p
     return list(papers.values())
 
 
