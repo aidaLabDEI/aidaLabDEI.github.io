@@ -1,6 +1,10 @@
 import urllib.request
 import json
 import os
+import time
+
+HEADERS = {'User-Agent': 'update-papers/1.0 (matteo.ceccarello@unipd.it)'}
+REQUEST_DELAY = 2  # seconds between dblp requests
 
 authors = [
     { 'author': 'Andrea_Pietracaprina', 'from_year': '2020', 'to_year': '3000' },
@@ -25,8 +29,16 @@ def get_author(author, from_year, to_year):
     print(f"Updating {author}")
     url = f'https://dblp.org/search/publ/api?q=author:{author}:&format=json'
     # url = f'https://dblp.uni-trier.de/search/publ/api?q=author:{author}:&format=json'
-    req = urllib.request.urlopen(url)
-    dat = json.load(req)
+    req = urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS))
+    content_type = req.headers.get('Content-Type', '')
+    body = req.read()
+    if 'json' not in content_type:
+        raise RuntimeError(
+            f"dblp returned {content_type!r} instead of JSON for {author} "
+            f"(bot challenge or rate limit?): {body[:100]!r}"
+        )
+    dat = json.loads(body)
+    time.sleep(REQUEST_DELAY)
     hits = dat['result']['hits']['hit']
     papers = []
     for pap in hits:
